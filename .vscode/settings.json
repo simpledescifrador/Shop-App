@@ -1,0 +1,42 @@
+{
+    "files.autoSave": "onFocusChange",
+    "editor.minimap.enabled": true,
+    "workbench.statusBar.visible": true,
+    "workbench.activityBar.visible": true,
+    "editor.formatOnSave": false,
+
+    "workbench.colorCustomizations": {
+      "statusBar.background": "#110d1f",
+      "statusBar.noFolderBackground": "#303030",
+      "statusBar.debuggingBackground": "#263238"
+    },
+    // Theme Setup.
+  "workbench.colorTheme": "Noctis Uva",
+  "workbench.iconTheme": "vs-seti",
+  "editor.fontLigatures": true,
+  "editor.fontFamily": "'Fira Code', Consolas, monospace",
+  "vscode_custom_css.imports":
+    [
+      "file:///C:/Users/edtvi/OneDrive/Desktop/customcss.css"
+    ],
+  "vscode_custom_css.policy": true,
+  "terminal.integrated.fontFamily": "'Operator Mono', 'Inconsolata for Powerline', monospace",
+  "editor.letterSpacing": 0.5,
+  "editor.fontWeight": "400",
+  "editor.lineHeight": 22,
+  "editor.cursorStyle": "line",
+  "editor.cursorWidth": 5,
+  "editor.cursorBlinking": "solid",
+  "editor.renderWhitespace": "all",
+  "editor.snippetSuggestions": "top",
+  "editor.glyphMargin": true,
+  "workbench.editor.enablePreview": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/vendor/*/**": true
+  }
+}
