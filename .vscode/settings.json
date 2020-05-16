@@ -11,7 +11,7 @@
       "statusBar.debuggingBackground": "#263238"
     },
     // Theme Setup.
-  "workbench.colorTheme": "Andromeda Bordered",
+  "workbench.colorTheme": "Andromeda",
   "workbench.iconTheme": "vs-seti",
   "editor.fontLigatures": true,
   "editor.fontFamily": "'Fira Code', Consolas, monospace",
