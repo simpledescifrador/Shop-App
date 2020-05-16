@@ -1,17 +1,17 @@
 {
-    "files.autoSave": "onFocusChange",
+    "files.autoSave": "off",
     "editor.minimap.enabled": true,
     "workbench.statusBar.visible": true,
     "workbench.activityBar.visible": true,
     "editor.formatOnSave": false,
 
     "workbench.colorCustomizations": {
-      "statusBar.background": "#110d1f",
+      "statusBar.background": "#850071",
       "statusBar.noFolderBackground": "#303030",
       "statusBar.debuggingBackground": "#263238"
     },
     // Theme Setup.
-  "workbench.colorTheme": "Noctis Uva",
+  "workbench.colorTheme": "Andromeda Bordered",
   "workbench.iconTheme": "vs-seti",
   "editor.fontLigatures": true,
   "editor.fontFamily": "'Fira Code', Consolas, monospace",
