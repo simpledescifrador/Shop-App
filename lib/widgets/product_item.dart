@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product.dart';
+import 'package:shop_app/models/products.dart';
 import 'package:shop_app/screens/product_detail.dart';
 
 class ProductItem extends StatelessWidget {
@@ -44,7 +45,13 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
-              onPressed: product.toggleFavoriteStatus,
+              onPressed: () {
+                product.toggleFavoriteStatus();
+                Provider.of<Products>(
+                  context,
+                  listen: false,
+                ).refreshProductList();
+              },
             ),
           ),
           trailing: IconButton(

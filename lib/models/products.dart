@@ -35,6 +35,41 @@ class Products with ChangeNotifier {
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
+    Product(
+      id: 'p5',
+      title: 'IPhone X',
+      description:
+          'The iPhone X was Apple\'s flagship 10th anniversary iPhone featuring a 5.8-inch OLED display, facial recognition and 3D camera functionality, a glass body, and an A11 Bionic processor.',
+      price: 999,
+      imageUrl:
+          'https://www.apple.com/newsroom/images/product/iphone/standard/iphonex_front_back_glass_big.jpg.large.jpg',
+    ),
+    Product(
+      id: 'p6',
+      title: 'Xbox One X',
+      description:
+          'The Xbox One is an eighth-generation home video game console developed by Microsoft. Announced in May 2013, it is the successor to Xbox 360 and the third console in the Xbox series of video game consoles. ... Microsoft marketed the device as an "all-in-one entertainment system", hence the name \'Xbox One\'.',
+      price: 650,
+      imageUrl:
+          'https://cdn.vox-cdn.com/thumbor/Q6U1XMVx8mRUcaYmP5Me1_eP7pk=/0x0:950x623/1200x800/filters:focal(399x236:551x388)/cdn.vox-cdn.com/uploads/chorus_image/image/60345327/Xbox_One_X_Screenshot_05.0.jpg',
+    ),
+    Product(
+      id: 'p7',
+      title: 'Xiaomi  Redmi 9s',
+      description:
+          'The phone is powered by Octa core (2.3 GHz, Dual core, Kryo 465 + 1.8 GHz, Hexa Core, Kryo 465) processor. It runs on the Qualcomm Snapdragon 720G Chipset. It has 4 GB RAM and 64 GB internal storage.',
+      price: 200,
+      imageUrl:
+          'https://cnet4.cbsistatic.com/img/PIwhzdf2wUYhy9XjLk20GbVlWdY=/940x0/2020/03/23/fb734368-c213-4480-a8eb-b9cb5052c4d9/j6a-mix2-jpeg.jpg',
+    ),
+    Product(
+      id: 'p8',
+      title: 'Logitech G102 Prodigy',
+      description:
+          'A responsive, accurate gaming mouse is super important when you’re gaming and that office rodent that came with your PC could well be holding you back from greatness online. If you’re looking to get the drop on someone in Fortnite or Apex Legends, you don’t want an uncomfortable, unresponsive mouse ruining your game.',
+      price: 37.99,
+      imageUrl: 'https://cf.shopee.ph/file/0b515dade6e19709d516fa0eab562c78',
+    ),
   ];
 
   List<Product> get items => _items;
@@ -47,6 +82,10 @@ class Products with ChangeNotifier {
 
   void addProduct(Product product) {
     _items.add(product);
+    notifyListeners();
+  }
+
+  void refreshProductList() {
     notifyListeners();
   }
 }
