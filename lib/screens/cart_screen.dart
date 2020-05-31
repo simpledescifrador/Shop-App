@@ -62,31 +62,74 @@ class CartScreen extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      Provider.of<Orders>(
-                        context,
-                        listen: false,
-                      ).addOrder(
-                        cart.cartItems.values.toList(),
-                        cart.totalCartAmount,
-                      );
-                      cart.clearCartItems();
-
-                      Navigator.of(context)
-                          .pushReplacementNamed(OrderScreen.routename);
-                    },
-                    child: Text(
-                      'Order Now',
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    ),
-                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: (widget.cart.totalCartAmount <= 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              try {
+                await Provider.of<Orders>(
+                  context,
+                  listen: false,
+                ).addOrder(
+                  widget.cart.cartItems.values.toList(),
+                  widget.cart.totalCartAmount,
+                );
+
+                setState(() {
+                  _isLoading = false;
+                });
+                widget.cart.clearCartItems();
+                Navigator.of(context)
+                    .pushReplacementNamed(OrderScreen.routename);
+              } catch (error) {
+                print(error);
+              }
+            },
+      child: _isLoading
+          ? Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              ),
+            )
+          : Text(
+              'Order Now',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
     );
   }
 }
