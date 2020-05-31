@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shop_app/data/products_repository.dart';
 
 import 'package:shop_app/models/product.dart';
@@ -86,7 +85,7 @@ class Products with ChangeNotifier {
   Product getProductById(String id) =>
       _items.firstWhere((product) => id == product.id);
 
-  Future<void> fetchProducts() async {
+  Future<void> loadProducts() async {
     try {
       _items = await ProductRepository().fetchProducts();
       notifyListeners();

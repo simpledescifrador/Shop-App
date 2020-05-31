@@ -51,22 +51,25 @@ class ProductRepository implements _ProductRepositoryEvents {
   @override
   Future<List<Product>> fetchProducts() async {
     try {
-      final response = await http.get(url + '.json');
+      final response = await http.get('$url.json');
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
-      extractedData.forEach((productId, productData) {
-        loadedProducts.insert(
-          0,
-          Product(
-            id: productId,
-            title: productData['title'],
-            description: productData['description'],
-            price: double.tryParse(productData['price'].toString()),
-            imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite'] as bool,
-          ),
-        );
-      });
+
+      if (extractedData != null) {
+        extractedData.forEach((productId, productData) {
+          loadedProducts.insert(
+            0,
+            Product(
+              id: productId,
+              title: productData['title'],
+              description: productData['description'],
+              price: double.tryParse(productData['price'].toString()),
+              imageUrl: productData['imageUrl'],
+              isFavorite: productData['isFavorite'] as bool,
+            ),
+          );
+        });
+      }
 
       return loadedProducts;
     } catch (error) {
