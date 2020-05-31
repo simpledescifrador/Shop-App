@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:shop_app/data/products_repository.dart';
 
 class Product with ChangeNotifier {
   Product({
@@ -22,8 +23,28 @@ class Product with ChangeNotifier {
   double price;
   String title;
 
-  void toggleFavoriteStatus() {
-    isFavorite = !isFavorite;
+  void _setFavoriteStatus(bool newStatus) {
+    isFavorite = newStatus;
     notifyListeners();
+  }
+
+  void toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite; //Change Favorite Status
+    notifyListeners();
+
+    try {
+      final responseStatusCode =
+          await ProductRepository().setFavoriteProduct(id, isFavorite);
+
+      if (responseStatusCode >= 400) {
+        //Rollback changes
+        _setFavoriteStatus(oldStatus);
+      }
+    } catch (error) {
+      //Rollback changes
+      _setFavoriteStatus(oldStatus);
+      throw error;
+    }
   }
 }
