@@ -7,6 +7,9 @@ import 'package:shop_app/utils/http_exception.dart';
 class Products with ChangeNotifier {
   static const baseUrl = 'https://flutter-shop-8a914.firebaseio.com';
 
+  String authToken;
+  String userId;
+
   List<Product> _items = [
     // Product(
     //   id: 'p1',
@@ -87,7 +90,16 @@ class Products with ChangeNotifier {
 
   Future<void> loadProducts() async {
     try {
-      _items = await ProductRepository().fetchProducts();
+      _items = await ProductRepository(authToken, userId).fetchProducts();
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> loadUserProducts() async {
+    try {
+      _items = await ProductRepository(authToken, userId).fetchProducts(true);
       notifyListeners();
     } catch (error) {
       throw error;
@@ -96,7 +108,8 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     try {
-      product.id = await ProductRepository().addProduct(product);
+      product.id =
+          await ProductRepository(authToken, userId).addProduct(product);
       _items.insert(0, product);
       notifyListeners();
     } catch (error) {
@@ -110,8 +123,8 @@ class Products with ChangeNotifier {
         _items.indexWhere((product) => product.id == updatedProduct.id);
     try {
       if (productIndex >= 0) {
-        final responseStatusCode =
-            await ProductRepository().updateProduct(updatedProduct);
+        final responseStatusCode = await ProductRepository(authToken, userId)
+            .updateProduct(updatedProduct);
 
         if (responseStatusCode >= 400) {
           throw HttpException('Failed to update the product!');
@@ -132,7 +145,8 @@ class Products with ChangeNotifier {
       _items.removeAt(productIndex);
       notifyListeners();
 
-      final responseStatusCode = await ProductRepository().deleteProduct(id);
+      final responseStatusCode =
+          await ProductRepository(authToken, userId).deleteProduct(id);
 
       if (responseStatusCode >= 400) {
         _items.insert(productIndex, existingProduct);

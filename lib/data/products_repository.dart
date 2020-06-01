@@ -17,19 +17,25 @@ abstract class _ProductRepositoryEvents {
 }
 
 class ProductRepository implements _ProductRepositoryEvents {
-  static const url = 'https://flutter-shop-8a914.firebaseio.com/products';
+  static const _url = 'https://flutter-shop-8a914.firebaseio.com/products';
+  final String _authToken;
+  final String _userId;
+
+  ProductRepository(this._authToken, this._userId);
 
   @override
   Future<String> addProduct(Product product) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
       final response = await http.post(
-        url + '.json',
+        _url + '.json?auth=$_authToken',
         body: json.encode({
           'title': product.title,
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavorite,
+          'creatorId': _userId,
         }),
       );
       return json.decode(response.body)['name']; //Return Product ID
@@ -40,8 +46,11 @@ class ProductRepository implements _ProductRepositoryEvents {
 
   @override
   Future<int> deleteProduct(String productId) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
-      final response = await http.delete('$url/$productId.json');
+      final response =
+          await http.delete('$_url/$productId.json?auth=$_authToken');
       return response.statusCode;
     } catch (error) {
       throw error;
@@ -49,13 +58,23 @@ class ProductRepository implements _ProductRepositoryEvents {
   }
 
   @override
-  Future<List<Product>> fetchProducts() async {
+  Future<List<Product>> fetchProducts([bool filterByUser = false]) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$_userId"' : '';
     try {
-      final response = await http.get('$url.json');
+      final response =
+          await http.get('$_url.json?auth=$_authToken&$filterString');
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
 
       if (extractedData != null) {
+        final userFavoritesResponse = await http
+            .get('${_url}UserFavorites/$_userId.json?auth=$_authToken');
+
+        final favoriteData = jsonDecode(userFavoritesResponse.body);
+
         extractedData.forEach((productId, productData) {
           loadedProducts.insert(
             0,
@@ -65,7 +84,9 @@ class ProductRepository implements _ProductRepositoryEvents {
               description: productData['description'],
               price: double.tryParse(productData['price'].toString()),
               imageUrl: productData['imageUrl'],
-              isFavorite: productData['isFavorite'] as bool,
+              isFavorite: favoriteData == null
+                  ? false
+                  : favoriteData[productId] ?? false,
             ),
           );
         });
@@ -80,12 +101,12 @@ class ProductRepository implements _ProductRepositoryEvents {
   @override
   Future<int> setFavoriteProduct(
       String productId, bool isFavoriteStatus) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
-      final response = await http.patch(
-        '$url/$productId.json',
-        body: jsonEncode({
-          'isFavorite': isFavoriteStatus,
-        }),
+      final response = await http.put(
+        '${_url}UserFavorites/$_userId/$productId.json?auth=$_authToken',
+        body: jsonEncode(isFavoriteStatus),
       );
       return response.statusCode;
     } catch (error) {
@@ -95,15 +116,16 @@ class ProductRepository implements _ProductRepositoryEvents {
 
   @override
   Future<int> updateProduct(Product updatedProduct) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
       final response = await http.patch(
-        '$url/${updatedProduct.id}.json',
+        '$_url/${updatedProduct.id}.json?auth=$_authToken',
         body: jsonEncode({
           'title': updatedProduct.title,
           'description': updatedProduct.description,
           'price': updatedProduct.price,
           'imageUrl': updatedProduct.imageUrl,
-          'isFavorite': updatedProduct.isFavorite,
         }),
       );
       return response.statusCode;

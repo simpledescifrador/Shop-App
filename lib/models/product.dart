@@ -28,14 +28,14 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite; //Change Favorite Status
     notifyListeners();
 
     try {
-      final responseStatusCode =
-          await ProductRepository().setFavoriteProduct(id, isFavorite);
+      final responseStatusCode = await ProductRepository(authToken, userId)
+          .setFavoriteProduct(id, isFavorite);
 
       if (responseStatusCode >= 400) {
         //Rollback changes

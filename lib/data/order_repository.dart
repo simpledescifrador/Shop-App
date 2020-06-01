@@ -1,22 +1,30 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/orders.dart';
 
 abstract class _OrderRepositoryEvents {
   Future<String> addOrder(OrderItem newOrderItem);
+
   Future<List<OrderItem>> fetchOrderItems();
 }
 
 class OrderRepository implements _OrderRepositoryEvents {
-  static const url = 'https://flutter-shop-8a914.firebaseio.com/orders';
+  final String _authToken;
+  final String _userId;
+  static const _url = 'https://flutter-shop-8a914.firebaseio.com/orders';
+
+  OrderRepository(this._authToken, this._userId);
 
   @override
   Future<String> addOrder(OrderItem newOrderItem) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
       final response = await http.post(
-        '$url.json',
+        '$_url/$_userId.json?auth=$_authToken',
         body: jsonEncode({
           'amount': newOrderItem.amount,
           'dateTime': newOrderItem.dateTime.toIso8601String(),
@@ -39,8 +47,10 @@ class OrderRepository implements _OrderRepositoryEvents {
 
   @override
   Future<List<OrderItem>> fetchOrderItems() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final authToken = prefs.getString('authToken');
     try {
-      final response = await http.get('$url.json');
+      final response = await http.get('$_url/$_userId.json?auth=$_authToken');
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
       final List<OrderItem> loadedOrders = [];
 

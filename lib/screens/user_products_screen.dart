@@ -10,12 +10,12 @@ class UserProductsScreen extends StatelessWidget {
   static const String routeName = '/user-product';
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).loadProducts();
+    await Provider.of<Products>(context, listen: false).loadUserProducts();
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
+    // final productsData = Provider.of<Products>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
@@ -29,18 +29,28 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: MainDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: SafeArea(
-          child: ListView.builder(
-            itemBuilder: (ctx, index) => UserProductItem(
-              id: productsData.items[index].id,
-              title: productsData.items[index].title,
-              imageUrl: productsData.items[index].imageUrl,
-            ),
-            itemCount: productsData.items.length,
-          ),
-        ),
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProducts(context),
+                    child: Consumer<Products>(
+                      builder: (_, product, child) => SafeArea(
+                        child: ListView.builder(
+                          itemBuilder: (ctx, index) => UserProductItem(
+                            id: product.items[index].id,
+                            title: product.items[index].title,
+                            imageUrl: product.items[index].imageUrl,
+                          ),
+                          itemCount: product.items.length,
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }
